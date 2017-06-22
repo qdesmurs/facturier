@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+<form class="" action="{% url 'devis' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        {{form.name.label_tag}}{{form.name}}
+    </div>
+    <div class="row">
+        {{form.date.label_tags}}{{form.date}}
+    </div>
+    <div class="row">
+        {{form.status.label_tags}}{{form.status}}
+    </div>
+    <div class="row">
+        {{form.price.label_tags}}{{form.price}}
+    </div>
+    <button type="submit" name="button">Create</button>
+
+</form>
+{% endblock %}
