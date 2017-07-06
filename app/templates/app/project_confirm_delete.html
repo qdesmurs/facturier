@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>sure m8? Delete "{{object}}"</p>
+    <input type="submit" name="" value="Confirm">
+</form>
+{% endblock %}

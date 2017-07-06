@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading">Devis En Cours</div>
+        <table class="table">
+          <thead>
+              <tr>
+                  <th>Nom</th>
+                  <th>Date de création</th>
+                  <th>Temps restant</th>
+                  <th>Client</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for project in devEnCours %}
+              <tr>
+                  <td><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></td>
+                  <td>{{ project.creation_date }}</td>
+                  <td>6 mois</td>
+                  <th>{{ project.id_client }}</th>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Factures En Cours</div>
+            <table class="table">
+              <thead>
+                  <tr>
+                      <th>Nom</th>
+                      <th>Date de création</th>
+                      <th>Temps restant</th>
+                      <th>Client</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for project in factEnCours %}
+                  <tr>
+                      <td><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></td>
+                      <td>{{ project.creation_date }}</td>
+                      <td>6 mois</td>
+                      <th>{{ project.id_client }}</th>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+        </div>
+{% endblock %}

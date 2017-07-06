@@ -26,6 +26,13 @@ from django.contrib.auth.models import User
 #     quantity = models.SmallIntegerField()
 #     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
 
+STATUS_CHOICES = (
+   ("Devis en Cours", 'Devis en cours'),
+   ("Facture en Cours", 'Facture en cours'),
+   ("Devis Perdu", 'Perdu'),
+   ("Facture Payée", 'Payé'),
+)
+
 class Client(models.Model):
     name = models.CharField(max_length=50)
     id_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
@@ -41,8 +48,28 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     id_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    id_status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    # id_status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    status = models.CharField(max_length=150, choices=STATUS_CHOICES)
     creation_date = models.DateField(auto_now=False, auto_now_add=False)
+    def unit_price(self):
+        b = ''
+        for j in self.project_line_set.all():
+            b = j.unit_price
+        return b
+
+    def amount(self):
+        result = 0
+        for line in self.project_line_set.all():
+            result += line.quantity * line.unit_price
+
+        return result
+
+    def quantity(self):
+        a = ''
+        for i in self.project_line_set.all():
+            a = i.quantity
+        return a
+
     def __unicode__(self):
         return self.name
 

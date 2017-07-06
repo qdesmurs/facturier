@@ -5,11 +5,13 @@ from django.shortcuts import render, redirect, reverse
 
 from .models import *
 
-from django.forms import inlineformset_factory
-
 from django.contrib.auth.decorators import login_required, permission_required
 
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView, ListView
+
+from django.views.generic.edit import UpdateView, DeleteView
+
+from django.core.urlresolvers import reverse_lazy
 
 from .forms import *
 
@@ -18,40 +20,80 @@ from .forms import *
 def homepage(request):
     return render(request, "homepage.html")
 
+class DevisListView(ListView):
+    model = Project
+    template_name = "devislist.html"
+    def get_context_data(self):
+        context = ListView.get_context_data(self)
+        context['devEnCours'] = Project.objects.filter(status = "Devis en Cours")
+        context['factEnCours'] = Project.objects.filter(status = "Facture en Cours")
+        return context
+
+class TresListView(ListView):
+    model = Project
+    template_name = "tresorerie.html"
+    def get_context_data(self):
+        context = ListView.get_context_data(self)
+        fpayee = Project.objects.filter(status = "Facture Payée")
+        context["factpayee"] = fpayee
+        total = 0
+        for i in fpayee:
+            total += i.amount()
+        context["total"] = total
+        return context
+
+class ArchiveListView(ListView):
+    model = Project
+    template_name = "archives.html"
+    def get_context_data(self):
+        context = ListView.get_context_data(self)
+        context['devPerdu'] = Project.objects.filter(status = "Devis Perdu")
+        context['factPayee'] = Project.objects.filter(status = "Facture Payée")
+        return context
+
+class DevisDetails(DetailView):
+    model = Project
+    slug_field = "name"
+    context_object_name = "details"
+    template_name = "devisdetails.html"
+
+class CreateClient(CreateView):
+    model = Client
+    fields = ("name",)
+    template_name = "createclient.html"
+    success_url = reverse_lazy('devis')
+
 class CreateDevis(CreateView):
     model = Project
     template_name = 'devis.html'
     fields = "__all__"
+    success_url = reverse_lazy('devislist')
 
-    def lines(self):
-        if self.request.POST:
-            return lineFormSet(self.request.POST)
-        else :
-            return lineFormSet()
+    def get_context_data(self, form=None):
+        context = CreateView.get_context_data(self)
+        context["app_formset"] = LineFormSet()
+        return context
 
     def form_valid(self, form):
-        product = self.lines()
-        self.object = form.save()
-        if product.is_valid():
-            product.instance = self.object
-            product.save()
-        return super(CreateDevis, self).form_valid(form)
+        app_resp = CreateView.form_valid(self, form)
+        app_formset = LineFormSet(self.request.POST, instance=self.object)
+
+        if app_formset.is_valid():
+            app_formset.save()
+
+        return app_resp
 
     def get_success_url(self):
-        return reverse('homepage')
+        return reverse('devislist')
 
-#
-# @login_required
-# @permission_required('post.add_post')
-# def create_estimate(request):
-#     lineFormSet = inlineformset_factory(Project, Project_line, fields=['label', 'quantity', 'unit_price'] , extra=1)
-#     form = lineFormSet()
-#     if request.method == "POST":
-#         form = lineFormSet(request.POST)
-#         if form.is_valid():
-#             post = form.save()
-#
-#             context = {
-#             'form' : form
-#             }
-#             return render(request, "devis.html", context)
+class DevisUpdate(UpdateView):
+    model = Project
+    slug_field = "name"
+    fields = ("status",)
+    def get_success_url(self):
+       return reverse('devisdetails', kwargs={'slug': self.object.name})
+
+class DevisDelete(DeleteView):
+    model = Project
+    slug_field = "name"
+    success_url = reverse_lazy("devislist")
