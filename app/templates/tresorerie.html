@@ -3,6 +3,7 @@
 {% block title %}Tresorerie{% endblock title %}
 
 {% block content %}
+<h1>Tresorerie</h1>
 <div class="panel panel-default">
 <div class="panel-heading">Tresorerie</div>
     <table class="table">
@@ -10,6 +11,7 @@
           <tr>
               <th>Nom</th>
               <th>Date de création</th>
+              <th>Date de payationnage</th>
               <th>Status</th>
               <th>Client</th>
               <th>Montant</th>
@@ -20,6 +22,7 @@
           <tr>
               <td><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></td>
               <td>{{ project.creation_date }}</td>
+              <td>{{ project.date_payment}}</td>
               <td>{{ project.status}}</td>
               <th>{{ project.id_client }}</th>
               <th>{{ project.amount }} €</th>
@@ -27,6 +30,6 @@
           {% endfor %}
       </tbody>
     </table>
-    <h1>Total : {{total}} €</h1>
 </div>
+<div class="love-hate">Total : {{total}} €</div>
 {% endblock %}

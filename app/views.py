@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from .forms import *
 
+import datetime
 
 # Create your views here.
 def homepage(request):
@@ -66,7 +67,7 @@ class CreateClient(CreateView):
 class CreateDevis(CreateView):
     model = Project
     template_name = 'devis.html'
-    fields = "__all__"
+    fields = ("name", "id_user", "id_client", "status", "creation_date",)
     success_url = reverse_lazy('devislist')
 
     def get_context_data(self, form=None):
@@ -97,3 +98,26 @@ class DevisDelete(DeleteView):
     model = Project
     slug_field = "name"
     success_url = reverse_lazy("devislist")
+
+def change_status(request, name):
+   now = datetime.datetime.now()
+   prop = Project.objects.get(name=name)
+   prop.status = "Facture en Cours"
+   prop.date_acceptance = now
+   prop.save()
+   return redirect("devislist")
+
+def arch_proposal(request, name):
+   now = datetime.datetime.now()
+   prop = Project.objects.get(name=name)
+   if prop.status == "Devis en Cours":
+       prop.status = "Devis Perdu"
+       prop.date_refusal = now
+   else:
+       prop.status = "Facture Payée"
+       prop.date_payment = now
+   prop.save()
+   context = {
+       "project" : prop
+   }
+   return redirect('archive')

@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/$', DevisDetails.as_view(), name='devisdetails'),
     url(r'^(?P<slug>[\w-]+)/edit/$', DevisUpdate.as_view(), name='edit'),
     url(r'^(?P<slug>[\w-]+)/delete/$', DevisDelete.as_view(), name='delete'),
-
+    url(r'^(?P<name>[\w-]+)/change$', change_status, name="project-change"),
+    url(r'^(?P<name>[\w-]+)/arch$', arch_proposal, name="project-arch"),
 ]

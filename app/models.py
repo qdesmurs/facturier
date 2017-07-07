@@ -50,7 +50,10 @@ class Project(models.Model):
     id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
     # id_status = models.ForeignKey(Status, on_delete=models.CASCADE)
     status = models.CharField(max_length=150, choices=STATUS_CHOICES)
-    creation_date = models.DateField(auto_now=False, auto_now_add=False)
+    creation_date = models.DateField(auto_now_add=False)
+    date_refusal = models.DateTimeField(null=True, blank=True)
+    date_acceptance = models.DateTimeField(null=True, blank=True)
+    date_payment = models.DateTimeField(null=True, blank=True)
     def unit_price(self):
         b = ''
         for j in self.project_line_set.all():
