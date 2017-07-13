@@ -50,7 +50,7 @@ class Project(models.Model):
     id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
     # id_status = models.ForeignKey(Status, on_delete=models.CASCADE)
     status = models.CharField(max_length=150, choices=STATUS_CHOICES)
-    creation_date = models.DateField(auto_now_add=False)
+    creation_date = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     date_refusal = models.DateTimeField(null=True, blank=True)
     date_acceptance = models.DateTimeField(null=True, blank=True)
     date_payment = models.DateTimeField(null=True, blank=True)

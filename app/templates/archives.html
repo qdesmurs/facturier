@@ -12,6 +12,7 @@
               <th>Nom</th>
               <th>Date de création</th>
               <th>Status</th>
+              <th>Date d'acceptitude</th>
               <th>Client</th>
               <th>Montant</th>
           </tr>
@@ -19,8 +20,9 @@
       <tbody>
           {% for project in devPerdu %}
           <tr>
-              <td><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></td>
+              <th><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></th>
               <td>{{ project.creation_date }}</td>
+              <td>{{ project.date_refusal}}</td>
               <td>{{ project.status}}</td>
               <th>{{ project.id_client }}</th>
               <th>{{ project.amount }} €</th>
@@ -42,7 +44,7 @@
       <tbody>
           {% for project in factPayee %}
           <tr>
-              <td><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></td>
+              <th><a href="{% url 'devisdetails' project.name %}">{{ project.name}}</a></th>
               <td>{{ project.creation_date }}</td>
               <td>{{ project.status}}</td>
               <th>{{ project.id_client }}</th>
